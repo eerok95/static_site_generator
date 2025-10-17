@@ -34,6 +34,8 @@ def split_nodes_image(old_nodes):
                 new_nodes.append(TextNode(sections[0],TextType.TEXT))
                 new_nodes.append(TextNode(item[0], TextType.IMAGE, item[1]))
                 splittable_text = sections[1]
+            if len(splittable_text) > 0:
+                new_nodes.append(TextNode(splittable_text, TextType.TEXT))
                 
         else:
             new_nodes.append(node)
@@ -53,6 +55,8 @@ def split_nodes_link(old_nodes):
                 new_nodes.append(TextNode(sections[0],TextType.TEXT))
                 new_nodes.append(TextNode(item[0], TextType.LINK, item[1]))
                 splittable_text = sections[1]
+            if len(splittable_text) > 0:
+                new_nodes.append(TextNode(splittable_text, TextType.TEXT))
         else:
             new_nodes.append(node)
     return new_nodes
