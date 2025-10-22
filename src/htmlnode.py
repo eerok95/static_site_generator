@@ -20,7 +20,10 @@ class HTMLNode():
         return ""
 
     def __repr__(self):
-        print(f"tag: {self.tag}, value: {self.value}, children: {self.children}, props: {self.props}")
+        return (
+            f"HTMLNode(tag={repr(self.tag)}, value={repr(self.value)}, "
+            f"children={repr(self.children)}, props={repr(self.props)})"
+        )
     
 
 class LeafNode(HTMLNode):

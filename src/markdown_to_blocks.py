@@ -9,38 +9,29 @@ class BlockType(Enum):
     ORDERED_LIST = "ordered list"
 
 def block_to_block_type(block):
+    lines = block.split("\n")
 
-    if re.match(r"#{1,6} ", block):
+    if block.startswith(("# ", "## ", "### ", "#### ", "##### ", "###### ")):
         return BlockType.HEADING
-    if re.match(r"```",block) and re.match(r"```", block[::-1]):
+    if len(lines) > 1 and lines[0].startswith("```") and lines[-1].startswith("```"):
         return BlockType.CODE
-    splitted_block = block.split("\n")
-    is_a_quote = True
-    is_a_ul = True
-    is_a_ol = True
-    digit = 1
-    for line in splitted_block:
-        if re.match(r">.*", line):
-            pass
-        else:
-            is_a_quote = False
-        if re.match(r"- ", line):
-            pass
-        else:
-            is_a_ul = False
-        if line[0] == str(digit) and re.match(r"\d\. ",line):
-            digit += 1
-            pass
-        else:
-            is_a_ol = False
-
-    if is_a_quote:
+    if block.startswith(">"):
+        for line in lines:
+            if not line.startswith(">"):
+                return BlockType.PARAGRAPH
         return BlockType.QUOTE
-    if is_a_ul:
+    if block.startswith("- "):
+        for line in lines:
+            if not line.startswith("- "):
+                return BlockType.PARAGRAPH
         return BlockType.UNORDERED_LIST
-    if is_a_ol:
+    if block.startswith("1. "):
+        i = 1
+        for line in lines:
+            if not line.startswith(f"{i}. "):
+                return BlockType.PARAGRAPH
+            i += 1
         return BlockType.ORDERED_LIST
-    
     return BlockType.PARAGRAPH
     
     
@@ -49,16 +40,13 @@ def block_to_block_type(block):
 
 
 def markdown_to_blocks(markdown):
-    block_strings = markdown.split("\n\n")
-    remove_indexes = []
-    for i in range(len(block_strings)):
-        block_strings[i] = block_strings[i].strip()
-        if block_strings[i] == "\n":
-            remove_indexes.append(i)
-    for index in remove_indexes:
-        del block_strings[index]
-
-
-    return block_strings
+    blocks = markdown.split("\n\n")
+    filtered_blocks = []
+    for block in blocks:
+        if block == "":
+            continue
+        block = block.strip()
+        filtered_blocks.append(block)
+    return filtered_blocks
     
     
